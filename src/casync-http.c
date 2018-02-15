@@ -408,6 +408,12 @@ static int run(int argc, char *argv[]) {
                 if (curl_easy_setopt(curl, CURLOPT_SSH_AUTH_TYPES, CURLSSH_AUTH_AGENT) != CURLE_OK)
                         log_error("Failed to turn on ssh agent support, ignoring.");
         }
+	
+	if (curl_easy_setopt(curl, CURLOPT_SSLCERT, "/srv/tls.crt") != CURLE_OK)
+                log_error("Failed to add client certificate, ignoring.");
+
+        if (curl_easy_setopt(curl, CURLOPT_SSLKEY, "/srv/tls.key") != CURLE_OK)
+                log_error("Failed to add client private key, ignoring.");
 
         if (arg_rate_limit_bps > 0) {
                 if (curl_easy_setopt(curl, CURLOPT_MAX_SEND_SPEED_LARGE, arg_rate_limit_bps) != CURLE_OK) {
@@ -593,6 +599,8 @@ static int parse_argv(int argc, char *argv[]) {
                 { "help",           no_argument,       NULL, 'h'                },
                 { "verbose",        no_argument,       NULL, 'v'                },
                 { "rate-limit-bps", required_argument, NULL, 'l'                },
+		{ "tls-client-crt", required_argument, NULL, 't'		},
+		{ "tls-client-key", required_argument, NULL, 'k'		},
                 {}
         };
 
